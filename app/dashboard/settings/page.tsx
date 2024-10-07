@@ -17,26 +17,36 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className='flex justify-start items-center flex-wrap px-4 pt-5 gap-4'>
+    <div className="flex justify-start items-center flex-wrap px-4 pt-5 gap-4">
       <div className="flex flex-col gap-3 mb-[5rem] w-full max-w-[700px]">
         <h2 className="mt-10 scroll-m-20 border-b pb-2 w-full text-3xl font-semibold tracking-tight transition-colors first:mt-0">
           My Profile
         </h2>
-        <div className='flex w-full gap-3 mt-3'>
-          <div className='flex flex-col gap-3 w-full'>
-            <Label>First Name</Label>
-            <Input disabled defaultValue={user?.user?.firstName ? user?.user?.firstName : ""} />
+        <div className="flex w-full gap-3 mt-3">
+          <div className="flex flex-col gap-3 w-full">
+            <Label htmlFor="first-name">First Name</Label>
+            <Input
+              id="first-name"
+              disabled
+              defaultValue={user.firstName || ''}
+            />
           </div>
-          <div className='flex flex-col gap-3 w-full'>
-            <Label>Last Name</Label>
-            <Input disabled defaultValue={user?.user?.lastName ? user?.user?.lastName : ""} />
+          <div className="flex flex-col gap-3 w-full">
+            <Label htmlFor="last-name">Last Name</Label>
+            <Input
+              id="last-name"
+              disabled
+              defaultValue={user.lastName || ''}
+            />
           </div>
         </div>
-        <div className='flex flex-col gap-3'>
-          <div className='flex flex-col gap-3'>
-            <Label>E-mail</Label>
-            <Input disabled defaultValue={user?.user?.emailAddresses?.[0]?.emailAddress!} />
-          </div>
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="email">E-mail</Label>
+          <Input
+            id="email"
+            disabled
+            defaultValue={user.emailAddresses?.[0]?.emailAddress || ''}
+          />
         </div>
       </div>
     </div>

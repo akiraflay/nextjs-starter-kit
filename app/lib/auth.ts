@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 
-// This is a mock implementation. Replace with your actual authentication logic.
-interface User {
-  user?: {
-    firstName?: string;
-    lastName?: string;
-    emailAddresses?: { emailAddress: string }[];
-  };
+// Define the User interface once to avoid duplication
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  emailAddresses?: { emailAddress: string }[];
 }
 
+// Hook for fetching user data
 export function useUser() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,11 +19,12 @@ export function useUser() {
     // Simulate an API call or authentication check
     setTimeout(() => {
       setUser({
-        user: {
-          firstName: 'John',
-          lastName: 'Doe',
-          emailAddresses: [{ emailAddress: 'john.doe@example.com' }],
-        },
+        id: 1,
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        emailAddresses: [{ emailAddress: 'john.doe@example.com' }],
       });
       setIsLoading(false);
     }, 1000);
@@ -30,18 +33,20 @@ export function useUser() {
   return { user, isLoading };
 }
 
-// Define the path alias '@' to map to the 'app' directory in tsconfig.json
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-export const authenticateUser = (email: string, password: string): User | null => {
+// Authentication function
+export const authenticateUser = (
+  email: string,
+  password: string
+): User | null => {
   // Dummy authentication logic
-  if (email === "user@example.com" && password === "password") {
-    return { id: 1, name: "John Doe", email };
+  if (email === 'user@example.com' && password === 'password') {
+    return {
+      id: 1,
+      name: 'John Doe',
+      email,
+      firstName: 'John',
+      lastName: 'Doe',
+    };
   }
   return null;
 };
