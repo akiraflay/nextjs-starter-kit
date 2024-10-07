@@ -2,13 +2,18 @@
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import config from '@/config';
-import { useUser } from '@clerk/nextjs'
+import { useUser } from '@/lib/auth'
+import { authenticateUser } from '@/lib/auth';
 
-export default function Settings() {
-  let user = null;
+export default function SettingsPage() {
+  const { user, isLoading } = useUser()
 
-  if (config?.auth?.enabled) {
-      user = useUser();
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (!user) {
+    return <div>User not found</div>
   }
 
   return (

@@ -1,29 +1,26 @@
-import NotAuthorized from "@/components/not-authorized"
-import { isAuthorized } from "@/utils/data/user/isAuthorized"
-import { currentUser } from "@clerk/nextjs/server"
-import { ReactNode } from "react"
-import DashboardSideBar from "./_components/dashboard-side-bar"
-import DashboardTopNav from "./_components/dashbord-top-nav"
-import config from "@/config"
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import '@/app/globals.css'  // Update this line
 
-export default async function DashboardLayout({ children }: { children: ReactNode }) {
+const inter = Inter({ subsets: ['latin'] })
 
-  const user = await currentUser()
+export const metadata: Metadata = {
+  title: 'Osgood Zero',
+  description: 'Your intelligent companion for legal research and analysis',
+}
 
-  const { authorized, message } = await isAuthorized(user?.id!)
-
-  if (config.payments.enabled && !authorized) {
-    return <NotAuthorized />
-  }
-
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
-      <DashboardSideBar />
-      <DashboardTopNav >
-        <main className="flex flex-col gap-4 p-4 lg:gap-6">
+    <html lang="en">
+      <body className={inter.className}>
+        <main className="min-h-screen bg-[#111528] text-white">
           {children}
         </main>
-      </DashboardTopNav>
-    </div>
+      </body>
+    </html>
   )
 }

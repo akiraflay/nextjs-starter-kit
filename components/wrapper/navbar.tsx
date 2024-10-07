@@ -32,6 +32,12 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export default function NavBar() {
+    const { isAuthenticated, isLoading } = useAuth();
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
     let userId = null;
     if (config?.auth?.enabled) {
         const user = useAuth();

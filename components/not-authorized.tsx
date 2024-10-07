@@ -18,6 +18,12 @@ export default function NotAuthorized() {
           <p className="text-gray-400 mb-8 text-center">
             It looks like you haven't subscribed yet. To access this content, please upgrade to our premium service.
           </p>
+          <p className="text-sm text-muted-foreground">
+            You don&apos;t have permission to access this page.
+          </p>
+          <p className="text-sm text-muted-foreground mt-2">
+            If you believe this is an error, please contact your administrator.
+          </p>
           <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-500 to-transparent mb-8"></div>
           <Button asChild className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
             <Link href="/">Upgrade Now</Link>
