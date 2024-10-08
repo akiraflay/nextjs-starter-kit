@@ -4,13 +4,24 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { 
-  ChevronDown, ChevronUp, FileText, PenTool, Search, Send, Zap, Sparkles, Eraser,
-  MessageSquare
+import {
+  ChevronDown,
+  ChevronUp,
+  Send,
+  Zap,
+  Sparkles,
+  Eraser,
+  FileText,
+  PenTool,
+  MessageSquare,
+  Search,
 } from "lucide-react"
 import CategoryButton from './ui/CategoryButton'
 import ActionButton from './ui/ActionButton'
+
+// Import SVG icons as React components
+import OpenAIIcon from './icons/openai-icon.svg'
+import AnthropicIcon from './icons/anthropic-icon.svg'
 
 interface BottomBarProps {
   input: string;
@@ -33,11 +44,14 @@ const BottomBar: React.FC<BottomBarProps> = ({
   model,
   setModel,
   onAddMultiConversation,
-  onAdjustComplexity
+  onAdjustComplexity,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const handleDrag = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDrag = (
+    _event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
     if (info.offset.y < 0) {
       onAdjustComplexity(Math.abs(info.offset.y))
     } else if (info.offset.y > 0) {
@@ -55,37 +69,43 @@ const BottomBar: React.FC<BottomBarProps> = ({
 
   const isInputEmpty = !input || input.trim() === ''
 
-  const providerOptions = ["OpenAI", "Anthropic"]
-
-  const modelOptions: { [key: string]: string[] } = {
-    "OpenAI": ["gpt-4o", "o1-preview", "o1-mini"],
-    "Anthropic": ["Sonnet 3.5", "Opus 3.0"]
-  }
+  const providerOptions = [
+    {
+      name: "OpenAI",
+      models: ["gpt-4o", "o1-preview", "o1-mini"],
+      icon: OpenAIIcon,
+    },
+    {
+      name: "Anthropic",
+      models: ["Sonnet 3.5", "Opus 3.0"],
+      icon: AnthropicIcon,
+    },
+  ]
 
   return (
     <div className="bg-[#111528] border-t border-gray-800 p-4 transition-all duration-300 ease-in-out">
       <div className="max-w-6xl mx-auto">
         {isExpanded && (
           <div className="grid grid-cols-4 gap-4 mb-4">
-            <CategoryButton 
+            <CategoryButton
               icon={<FileText className="w-6 h-6" />}
               title="Review"
               description="Analyze and evaluate legal documents"
               color="bg-purple-500"
             />
-            <CategoryButton 
+            <CategoryButton
               icon={<PenTool className="w-6 h-6" />}
               title="Draft"
               description="Create and edit legal documents"
               color="bg-green-500"
             />
-            <CategoryButton 
+            <CategoryButton
               icon={<MessageSquare className="w-6 h-6" />}
               title="Summarize"
               description="Condense complex legal information"
               color="bg-yellow-500"
             />
-            <CategoryButton 
+            <CategoryButton
               icon={<Search className="w-6 h-6" />}
               title="Research"
               description="Explore legal precedents and statutes"
@@ -103,7 +123,11 @@ const BottomBar: React.FC<BottomBarProps> = ({
                   onClick={() => setIsExpanded(!isExpanded)}
                   className="text-gray-400 hover:text-white transition-colors h-8 w-8 p-0 flex-shrink-0"
                 >
-                  {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+                  {isExpanded ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronUp className="h-4 w-4" />
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -120,57 +144,56 @@ const BottomBar: React.FC<BottomBarProps> = ({
               rows={isExpanded ? 3 : 1}
             />
             <div className="absolute right-2 top-2 flex space-x-1">
-              <ActionButton icon={<Zap className="h-4 w-4" />} tooltip="Quick Actions" onClick={() => console.log("Quick Actions")} />
-              <ActionButton icon={<Sparkles className="h-4 w-4" />} tooltip="AI Suggestions" onClick={() => console.log("AI Suggestions")} />
-              <ActionButton icon={<Eraser className="h-4 w-4" />} tooltip="Clear Input" onClick={handleClearInput} />
+              <ActionButton
+                icon={<Zap className="h-4 w-4" />}
+                tooltip="Quick Actions"
+                onClick={() => console.log("Quick Actions")}
+              />
+              <ActionButton
+                icon={<Sparkles className="h-4 w-4" />}
+                tooltip="AI Suggestions"
+                onClick={() => console.log("AI Suggestions")}
+              />
+              <ActionButton
+                icon={<Eraser className="h-4 w-4" />}
+                tooltip="Clear Input"
+                onClick={handleClearInput}
+              />
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-[150px]">
-                  {provider} / {model}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
-                <Select
-                  value={provider}
-                  onValueChange={(value) => {
-                    setProvider(value)
-                    setModel(modelOptions[value][0])
-                  }}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select provider" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {providerOptions.map((p) => (
-                      <SelectItem key={p} value={p}>
-                        {p}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select
-                  value={model}
-                  onValueChange={(value) => {
-                    setModel(value)
-                    onAddMultiConversation(provider, value)
-                  }}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select model" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {modelOptions[provider].map((m) => (
-                      <SelectItem key={m} value={m}>
-                        {m}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </PopoverContent>
-            </Popover>
+            {providerOptions.map((providerOption) => (
+              <Popover key={providerOption.name}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setProvider(providerOption.name)}
+                    className="p-0 h-10 w-10 flex items-center justify-center hover:bg-[#1e2235] transition-colors"
+                  >
+                    <providerOption.icon className="w-6 h-6" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-40 p-2 bg-[#1e2235] border-gray-700">
+                  {providerOption.models.map((modelOption) => (
+                    <Button
+                      key={modelOption}
+                      variant="ghost"
+                      className="w-full justify-start text-white hover:bg-[#282d45] text-sm"
+                      onClick={() => {
+                        setModel(modelOption)
+                        onAddMultiConversation(
+                          providerOption.name,
+                          modelOption
+                        )
+                      }}
+                    >
+                      {modelOption}
+                    </Button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+            ))}
             <motion.div
               drag="y"
               dragConstraints={{ top: 0, bottom: 0 }}

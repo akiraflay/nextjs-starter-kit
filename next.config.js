@@ -1,32 +1,27 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
   images: {
-    remotePatterns: [{
-      protocol: 'https',
-      hostname: 'images.unsplash.com',
-      port: '',
-      pathname: '/**'
-    }, {
-      protocol: 'https',
-      hostname: 'seo-heist.s3.amazonaws.com',
-      port: '',
-      pathname: '/**'
-    }, {
-      protocol: 'https',
-      hostname: 'github.com',
-      port: '',
-      pathname: '/**'
-    }, {
-      protocol: 'https',
-      hostname: 'ansubkhan.com',
-      port: '',
-      pathname: '/**'
-    }, {
-      protocol: 'https',
-      hostname: 'utfs.io',
-      port: '',
-      pathname: '/**'
-    }]
-  }
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'hebbkx1anhila5yf.public.blob.vercel-storage.com',
+        port: '',
+        pathname: '/**',
+      },
+      // ... your existing remotePatterns
+    ],
+  },
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ['@svgr/webpack'],
+    });
+
+    return config;
+  },
 };
+
 module.exports = nextConfig;

@@ -45,3 +45,12 @@ const userUpdateSchema = z.object({
     .describe("user profile image URL"),
   user_id: z.string().describe("user ID"),
 });
+
+export interface CaseBrief {
+  id: string
+  name: string
+  citation: string
+  court: string
+  content: Record<string, string | string[]>
+  // Add any additional fields as needed
+}

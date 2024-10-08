@@ -18,6 +18,9 @@ export interface CaseBrief {
   name: string;
   citation: string;
   court: string;
+  content?: {
+    [key: string]: string | string[];
+  };
 }
 
 export interface Project {

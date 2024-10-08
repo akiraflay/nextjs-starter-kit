@@ -1,30 +1,24 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import BottomBar from './components/BottomBar'
 import WelcomeScreen from './components/WelcomeScreen'
 import MultiConversationPane from './components/MultiConversationPane'
-import CaseBriefChatDisplay from './components/CaseBriefChatDisplay'
-import Playground from './components/Playground'
 import RightSidebar from './components/RightSidebar'
 import AnimatedTaskBreakdown from './components/AnimatedTaskBreakdown'
-import { ScrollArea } from "@/components/ui/scroll-area"
+import CaseBriefChatDisplay from './components/CaseBriefChatDisplay'
+import Playground from './components/Playground'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Conversation, CaseBrief } from './types'
 import { mockCaseBriefs, mockCaseBriefContent } from './utils/mockData'
 
-// Add this type definition at the top of the file
-type Message = {
-  role: 'user' | 'system' | 'ai';
-  content: string;
-};
-
-export default function OsgoodZero() {
-  const [input, setInput] = useState("")
+function OsgoodZero() {
+  const [input, setInput] = useState('')
   const [conversations, setConversations] = useState<Conversation[]>([])
-  const [provider, setProvider] = useState("OpenAI")
-  const [model, setModel] = useState("gpt-4o")
+  const [provider, setProvider] = useState('OpenAI')
+  const [model, setModel] = useState('gpt-4o')
   const [selectedModels, setSelectedModels] = useState<{ [key: string]: number }>({})
   const [mainConversationId, setMainConversationId] = useState<number | null>(null)
   const [showRightSidebar, setShowRightSidebar] = useState(false)
@@ -35,117 +29,49 @@ export default function OsgoodZero() {
   const [selectedCaseBrief, setSelectedCaseBrief] = useState<CaseBrief | null>(null)
 
   const toggleSidebar = () => setIsExpanded(!isExpanded)
-
-  const toggleRightSidebar = () => {
-    setShowRightSidebar(!showRightSidebar)
-  }
+  const toggleRightSidebar = () => setShowRightSidebar(!showRightSidebar)
 
   const handleSend = () => {
     if (input.trim()) {
-      const newMessage: Message = { role: 'user', content: input }
-      setConversations(prev => prev.map(conv => ({
-        ...conv,
-        messages: [...conv.messages, newMessage]
-      })))
-      setInput("")
+      const newMessage = { role: 'user', content: input }
+      setConversations(prev =>
+        prev.map(conv => ({
+          ...conv,
+          messages: [...conv.messages, newMessage],
+        }))
+      )
+      setInput('')
 
       setShowTaskBreakdown(true)
 
       setTimeout(() => {
         setShowTaskBreakdown(false)
-        setConversations(prev => prev.map(conv => ({
-          ...conv,
-          messages: [
-            ...conv.messages,
-            { role: 'ai', content: `This is a simulated AI response for ${conv.model}.` }
-          ]
-        })))
+        setConversations(prev =>
+          prev.map(conv => ({
+            ...conv,
+            messages: [
+              ...conv.messages,
+              { role: 'ai', content: `This is a simulated AI response for ${conv.model}.` },
+            ],
+          }))
+        )
       }, 1500)
     }
   }
 
   const handleAddMultiConversation = (provider: string, model: string) => {
-    setSelectedModels(prev => ({
-      ...prev,
-      [model]: (prev[model] || 0) + 1
-    }))
     const newConversation: Conversation = {
       id: Date.now(),
       provider,
       model,
       messages: [],
-      parameters: {
-        temperature: 0.5,
-      }
+      parameters: { temperature: 0.5 },
     }
     setConversations(prev => [...prev, newConversation])
+    setSelectedModels(prev => ({ ...prev, [model]: (prev[model] || 0) + 1 }))
     if (mainConversationId === null) {
       setMainConversationId(newConversation.id)
     }
-  }
-
-  const handleRemoveModel = (model: string) => {
-    setSelectedModels(prev => {
-      const newSelectedModels = { ...prev }
-      if (newSelectedModels[model] && newSelectedModels[model] > 1) {
-        newSelectedModels[model]--
-      } else {
-        delete newSelectedModels[model]
-      }
-      return newSelectedModels
-    })
-    setConversations(prev => {
-      const modelInstances = prev.filter(conv => conv.model === model)
-      if (modelInstances.length > 1) {
-        return prev.filter(conv => conv.id !== modelInstances[modelInstances.length - 1].id)
-      }
-      return prev.filter(conv => conv.model !== model)
-    })
-  }
-
-  const handleCloseMultiConversation = (id: number) => {
-    const conversationToRemove = conversations.find(conv => conv.id === id)
-    if (conversationToRemove) {
-      handleRemoveModel(conversationToRemove.model)
-      if (id === mainConversationId) {
-        const remainingConversations = conversations.filter(conv => conv.id !== id)
-        setMainConversationId(remainingConversations.length > 0 ? remainingConversations[0].id : null)
-      }
-    }
-  }
-
-  const handleMultiConversationParameterChange = (id: number, parameter: string, value: number) => {
-    setConversations(conversations.map(conv => 
-      conv.id === id ? { ...conv, parameters: { ...conv.parameters, [parameter]: value } } : conv
-    ))
-  }
-
-  const handleSwitchToMain = (id: number) => {
-    setMainConversationId(id)
-  }
-
-  const handleNewChat = () => {
-    handleAddMultiConversation(provider, model)
-  }
-
-  const handleChatHistoryClick = () => {
-    console.log("Chat history clicked")
-  }
-
-  const handleProjectsClick = () => {
-    console.log("Projects clicked")
-  }
-
-  const handleOurMissionClick = () => {
-    console.log("Our Mission clicked")
-  }
-
-  const handleViewAllProjects = () => {
-    console.log("View all projects")
-  }
-
-  const handleViewAllChats = () => {
-    console.log("View all chats")
   }
 
   const handleAdjustComplexity = (complexityChange: number) => {
@@ -153,19 +79,29 @@ export default function OsgoodZero() {
       const updatedConversations = [...prev]
       const mainConversation = updatedConversations.find(conv => conv.id === mainConversationId)
       if (mainConversation) {
-        const lastAiMessageIndex = mainConversation.messages.findLastIndex(msg => msg.role === 'ai')
+        const lastAiMessageIndex = mainConversation.messages
+          .slice()
+          .reverse()
+          .findIndex(msg => msg.role === 'ai')
         if (lastAiMessageIndex !== -1) {
+          const index = mainConversation.messages.length - 1 - lastAiMessageIndex
           const adjustedMessage = {
-            ...mainConversation.messages[lastAiMessageIndex],
-            content: `${mainConversation.messages[lastAiMessageIndex].content} (Complexity adjusted by ${complexityChange})`
+            ...mainConversation.messages[index],
+            content: `${mainConversation.messages[index].content} (Complexity adjusted by ${complexityChange})`,
           }
-          mainConversation.messages[lastAiMessageIndex] = adjustedMessage
+          mainConversation.messages[index] = adjustedMessage
         }
       }
       return updatedConversations
     })
   }
 
+  const handleNewChat = () => handleAddMultiConversation(provider, model)
+  const handleChatHistoryClick = () => {}
+  const handleProjectsClick = () => {}
+  const handleOurMissionClick = () => {}
+  const handleViewAllProjects = () => {}
+  const handleViewAllChats = () => {}
   const handleViewOnMain = (caseBriefId: string) => {
     const caseBrief = mockCaseBriefs.find(brief => brief.id === caseBriefId)
     if (caseBrief) {
@@ -176,44 +112,54 @@ export default function OsgoodZero() {
         messages: [
           { role: 'system', content: 'Displaying case brief.' },
           { role: 'user', content: 'Show me the case brief.' },
-          { role: 'ai', content: Object.entries(mockCaseBriefContent).map(([key, value]) => `${key}\n${value}`).join('\n\n') }
+          { role: 'ai', content: Object.entries(mockCaseBriefContent).map(([key, value]) => `${key}\n${value}`).join('\n\n') },
         ],
-        parameters: { temperature: 0.5 }
+        parameters: { temperature: 0.5 },
       }
       setConversations(prev => [...prev, newConversation])
       setMainConversationId(newConversation.id)
     }
   }
-
-  const handleAttachAsFile = (caseBriefId: string) => {
-    console.log(`Attaching case brief ${caseBriefId} as file`)
+  const handleAttachAsFile = (caseBriefId: string) => {}
+  const handleSelectCase = (caseBrief: CaseBrief) => {
+    setSelectedCaseBrief(caseBrief)
   }
-
+  const handleCloseCaseBrief = () => {
+    setSelectedCaseBrief(null)
+  }
+  const handleCloseMultiConversation = (id: number) => {
+    setConversations(prev => prev.filter(conv => conv.id !== id))
+    setSelectedModels(prev => {
+      const updatedModels = { ...prev }
+      const closedConversation = conversations.find(conv => conv.id === id)
+      if (closedConversation) {
+        updatedModels[closedConversation.model] = (updatedModels[closedConversation.model] || 1) - 1
+        if (updatedModels[closedConversation.model] === 0) {
+          delete updatedModels[closedConversation.model]
+        }
+      }
+      return updatedModels
+    })
+    if (id === mainConversationId) {
+      setMainConversationId(conversations.length > 1 ? conversations[0].id : null)
+    }
+  }
+  const handleMultiConversationParameterChange = (id: number, parameter: string, value: number) => {
+    setConversations(prev =>
+      prev.map(conv =>
+        conv.id === id ? { ...conv, parameters: { ...conv.parameters, [parameter]: value } } : conv
+      )
+    )
+  }
+  const handleSwitchToMain = (id: number) => setMainConversationId(id)
   const handleTransformToPlayground = () => {
     setShowPlayground(true)
   }
-
   const handleClosePlayground = () => {
     setShowPlayground(false)
   }
-
   const handleRevertPlayground = () => {
-    setShowPlayground(false)
-    // You might want to add logic here to revert any changes made in the playground
-  }
-
-  const handleSelectCase = (caseBriefId: string) => {
-    const selectedCase = mockCaseBriefs.find(brief => brief.id === caseBriefId)
-    if (selectedCase) {
-      setSelectedCaseBrief({
-        ...selectedCase,
-        ...mockCaseBriefContent
-      })
-    }
-  }
-
-  const handleCloseCaseBrief = () => {
-    setSelectedCaseBrief(null)
+    // Logic to revert changes made in Playground
   }
 
   return (
@@ -229,7 +175,7 @@ export default function OsgoodZero() {
         onViewAllChats={handleViewAllChats}
       />
       <main className="flex-1 flex flex-col">
-        <TopBar 
+        <TopBar
           isExpanded={isExpanded}
           toggleSidebar={toggleSidebar}
           toggleRightSidebar={toggleRightSidebar}
@@ -242,7 +188,7 @@ export default function OsgoodZero() {
             {conversations.length === 0 && !selectedCaseBrief ? (
               <WelcomeScreen onStartNewConversation={handleNewChat} />
             ) : showPlayground ? (
-              <Playground 
+              <Playground
                 conversation={conversations.find(conv => conv.id === mainConversationId)!}
                 onClose={handleClosePlayground}
                 onRevert={handleRevertPlayground}
@@ -256,7 +202,7 @@ export default function OsgoodZero() {
                   />
                 )}
                 <div className={`flex flex-wrap ${selectedCaseBrief ? 'w-1/2' : 'w-full'}`}>
-                  {conversations.map((conv) => (
+                  {conversations.map(conv => (
                     <MultiConversationPane
                       key={conv.id}
                       conversation={conv}
@@ -286,7 +232,7 @@ export default function OsgoodZero() {
         />
       </main>
       {showRightSidebar && (
-        <RightSidebar 
+        <RightSidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
@@ -294,3 +240,5 @@ export default function OsgoodZero() {
     </div>
   )
 }
+
+export default OsgoodZero

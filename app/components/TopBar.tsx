@@ -3,19 +3,11 @@ import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Search, PanelRightClose, Sparkles, FileText } from "lucide-react"
+import { Search, PanelRightClose, Sparkles } from "lucide-react"
 import { FixedSizeList as List } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
 import { CaseBrief } from '../types'
 import { mockCaseBriefs } from '../utils/mockData'
-
-// Update the CaseBrief type to include title and date
-interface CaseBrief {
-  id: string;
-  title: string;
-  date: string;
-  // ... other properties
-}
 
 const placeholderSVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'/%3E%3C/svg%3E`;
 
@@ -25,7 +17,7 @@ interface TopBarProps {
   toggleRightSidebar: () => void;
   onViewOnMain: (caseBriefId: string) => void;
   onAttachAsFile: (caseBriefId: string) => void;
-  onSelectCase: (caseBriefId: string) => void;
+  onSelectCase: (caseBrief: CaseBrief) => void;
 }
 
 const TopBar: React.FC<TopBarProps> = ({ 
@@ -81,7 +73,7 @@ interface CaseBriefSearchProps {
   setSearchTerm: (term: string) => void;
   onViewOnMain: (caseBriefId: string) => void;
   onAttachAsFile: (caseBriefId: string) => void;
-  onSelectCase: (caseBriefId: string) => void;
+  onSelectCase: (caseBrief: CaseBrief) => void;
 }
 
 const CaseBriefSearch: React.FC<CaseBriefSearchProps> = ({
@@ -129,20 +121,20 @@ const CaseBriefSearch: React.FC<CaseBriefSearchProps> = ({
               height={24}
               className="h-6 w-6 rounded-full mr-2"
               src={placeholderSVG}
-              alt={caseBrief.title}
+              alt={caseBrief.name}
               placeholder="blur"
               blurDataURL={placeholderSVG}
             />
             <div>
-              <h3 className="text-sm font-semibold text-white">{caseBrief.title}</h3>
-              <p className="text-xs text-gray-400">{caseBrief.date}</p>
+              <h3 className="text-sm font-semibold text-white">{caseBrief.name}</h3>
+              <p className="text-xs text-gray-400">{caseBrief.citation}</p>
             </div>
           </div>
           <div className="flex space-x-2">
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => onSelectCase(caseBrief.id)}
+              onClick={() => onSelectCase(caseBrief)}
               className="text-xs bg-transparent border-gray-600 text-orange-400 hover:bg-[#282d45] hover:text-orange-300 transition-colors"
             >
               View Case Brief
@@ -166,25 +158,27 @@ const CaseBriefSearch: React.FC<CaseBriefSearchProps> = ({
       className={`absolute z-10 mt-2 w-full bg-[#1e2235] border border-gray-700 rounded-lg shadow-lg overflow-hidden ${isSearchFocused ? '' : 'hidden'}`}
       style={{ height: '60vh' }}
     >
-      <InfiniteLoader
-        isItemLoaded={isItemLoaded}
-        itemCount={itemCount}
-        loadMoreItems={loadMoreItems}
-      >
-        {({ onItemsRendered, ref }) => (
-          <List
-            className="List"
-            height={400}
-            itemCount={itemCount}
-            itemSize={60}
-            onItemsRendered={onItemsRendered}
-            ref={ref}
-            width="100%"
-          >
-            {Row}
-          </List>
-        )}
-      </InfiniteLoader>
+      <ScrollArea className="h-full">
+        <InfiniteLoader
+          isItemLoaded={isItemLoaded}
+          itemCount={itemCount}
+          loadMoreItems={loadMoreItems}
+        >
+          {({ onItemsRendered, ref }) => (
+            <List
+              className="List"
+              height={400}
+              itemCount={itemCount}
+              itemSize={60}
+              onItemsRendered={onItemsRendered}
+              ref={ref}
+              width="100%"
+            >
+              {Row}
+            </List>
+          )}
+        </InfiniteLoader>
+      </ScrollArea>
     </div>
   )
 }

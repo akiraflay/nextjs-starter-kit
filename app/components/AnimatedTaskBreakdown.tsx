@@ -1,22 +1,17 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-interface Task {
-  title: string;
-  description: string;
-}
-
 interface AnimatedTaskBreakdownProps {
-  isVisible: boolean;
+  isVisible: boolean
 }
 
-const AnimatedTaskBreakdown: React.FC<AnimatedTaskBreakdownProps> = ({ isVisible }) => {
-  const tasks: Task[] = [
-    { title: "Analyzing Input", description: "Processing user query and context" },
-    { title: "Retrieving Information",  description: "Searching relevant legal databases" },
-    { title: "Formulating Response", description: "Synthesizing data into coherent answer" }
-  ]
+const tasks = [
+  { title: 'Analyzing Input', description: 'Processing user query and context' },
+  { title: 'Retrieving Information', description: 'Searching relevant legal databases' },
+  { title: 'Formulating Response', description: 'Synthesizing data into coherent answer' },
+]
 
+function AnimatedTaskBreakdown({ isVisible }: AnimatedTaskBreakdownProps) {
   return (
     <AnimatePresence>
       {isVisible && (
@@ -30,7 +25,7 @@ const AnimatedTaskBreakdown: React.FC<AnimatedTaskBreakdownProps> = ({ isVisible
           <h3 className="text-lg font-semibold text-white mb-2">Task Breakdown</h3>
           {tasks.map((task, index) => (
             <motion.div
-              key={index}
+              key={task.title}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.2 }}

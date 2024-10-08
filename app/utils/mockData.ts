@@ -1,7 +1,22 @@
 import { CaseBrief, Project, RecentChat, AIModel, PromptTemplate, Mutation } from '../types'
 
 export const mockCaseBriefs: CaseBrief[] = [
-  { id: '1', name: 'Lochner v. New York', citation: '198 U.S. 45 (1905)', court: 'Supreme Court of United States' },
+  {
+    id: '1',
+    name: 'Lochner v. New York',
+    citation: '198 U.S. 45 (1905)',
+    court: 'Supreme Court of United States',
+    content: {
+      "Rule": "The State cannot unreasonably interfere with individuals' right to contract...",
+      "Facts": "Joseph Lochner, a bakery owner, was indicted for allowing an employee...",
+      "Issue": "Does New York's law limiting bakers' working hours violate the Fourteenth Amendment...",
+      "Key Quotes": [
+        "The general right to make a contract in relation to his business is part of the liberty...",
+        "The State... has power to prevent the individual from making certain kinds of contracts..."
+      ],
+      "Legal Significance": "This case established the principle of economic substantive due process..."
+    }
+  },
   { id: '2', name: 'Marbury v. Madison', citation: '5 U.S. 137 (1803)', court: 'Supreme Court of United States' },
   { id: '3', name: 'Brown v. Board of Education', citation: '347 U.S. 483 (1954)', court: 'Supreme Court of United States' },
   { id: '4', name: 'Roe v. Wade', citation: '410 U.S. 113 (1973)', court: 'Supreme Court of United States' },
