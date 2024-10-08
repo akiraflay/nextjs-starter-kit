@@ -1,6 +1,11 @@
 import React from 'react'
 import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface ActionButtonProps {
   icon: React.ReactNode;
@@ -8,19 +13,26 @@ interface ActionButtonProps {
   onClick: () => void;
 }
 
-const ActionButton: React.FC<ActionButtonProps> = ({ icon, tooltip, onClick }) => (
-  <TooltipProvider>
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white hover:bg-[#282d45] transition-colors" onClick={onClick}>
-          {icon}
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>{tooltip}</p>
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
-)
+const ActionButton: React.FC<ActionButtonProps> = ({ icon, tooltip, onClick }) => {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClick}
+            className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
+          >
+            {icon}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent className="bg-gray-800 text-white">
+          <p>{tooltip}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
 
 export default ActionButton

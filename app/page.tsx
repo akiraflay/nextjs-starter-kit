@@ -74,28 +74,6 @@ function OsgoodZero() {
     }
   }
 
-  const handleAdjustComplexity = (complexityChange: number) => {
-    setConversations(prev => {
-      const updatedConversations = [...prev]
-      const mainConversation = updatedConversations.find(conv => conv.id === mainConversationId)
-      if (mainConversation) {
-        const lastAiMessageIndex = mainConversation.messages
-          .slice()
-          .reverse()
-          .findIndex(msg => msg.role === 'ai')
-        if (lastAiMessageIndex !== -1) {
-          const index = mainConversation.messages.length - 1 - lastAiMessageIndex
-          const adjustedMessage = {
-            ...mainConversation.messages[index],
-            content: `${mainConversation.messages[index].content} (Complexity adjusted by ${complexityChange})`,
-          }
-          mainConversation.messages[index] = adjustedMessage
-        }
-      }
-      return updatedConversations
-    })
-  }
-
   const handleNewChat = () => handleAddMultiConversation(provider, model)
   const handleChatHistoryClick = () => {}
   const handleProjectsClick = () => {}
@@ -228,7 +206,7 @@ function OsgoodZero() {
           model={model}
           setModel={setModel}
           onAddMultiConversation={handleAddMultiConversation}
-          onAdjustComplexity={handleAdjustComplexity}
+          // Remove the onAdjustComplexity prop
         />
       </main>
       {showRightSidebar && (

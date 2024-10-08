@@ -2,15 +2,10 @@ export interface Conversation {
   id: number;
   provider: string;
   model: string;
-  messages: Message[];
+  messages: { role: string; content: string }[];
   parameters: {
     temperature: number;
   };
-}
-
-export interface Message {
-  role: 'user' | 'system' | 'ai';
-  content: string;
 }
 
 export interface CaseBrief {
@@ -18,9 +13,7 @@ export interface CaseBrief {
   name: string;
   citation: string;
   court: string;
-  content?: {
-    [key: string]: string | string[];
-  };
+  content?: Record<string, string | string[]>;
 }
 
 export interface Project {

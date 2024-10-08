@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { motion, PanInfo } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -16,12 +16,10 @@ import {
   MessageSquare,
   Search,
 } from "lucide-react"
-import CategoryButton from './ui/CategoryButton'
+import { cn } from "@/lib/utils"
 import ActionButton from './ui/ActionButton'
-
-// Import SVG icons as React components
-import OpenAIIcon from './icons/openai-icon.svg'
-import AnthropicIcon from './icons/anthropic-icon.svg'
+import ProviderIcon from './ui/ProviderIcon'
+import CategoryButton from './ui/CategoryButton'
 
 interface BottomBarProps {
   input: string;
@@ -32,7 +30,6 @@ interface BottomBarProps {
   model: string;
   setModel: (model: string) => void;
   onAddMultiConversation: (provider: string, model: string) => void;
-  onAdjustComplexity: (complexityChange: number) => void;
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({
@@ -44,20 +41,8 @@ const BottomBar: React.FC<BottomBarProps> = ({
   model,
   setModel,
   onAddMultiConversation,
-  onAdjustComplexity,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
-
-  const handleDrag = (
-    _event: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
-  ) => {
-    if (info.offset.y < 0) {
-      onAdjustComplexity(Math.abs(info.offset.y))
-    } else if (info.offset.y > 0) {
-      onAdjustComplexity(-info.offset.y)
-    }
-  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value)
@@ -72,44 +57,42 @@ const BottomBar: React.FC<BottomBarProps> = ({
   const providerOptions = [
     {
       name: "OpenAI",
-      models: ["gpt-4o", "o1-preview", "o1-mini"],
-      icon: OpenAIIcon,
+      models: ["GPT-4o", "o1-preview", "o1-mini"],
     },
     {
       name: "Anthropic",
-      models: ["Sonnet 3.5", "Opus 3.0"],
-      icon: AnthropicIcon,
+      models: ["Sonnet 3.5", "Opus 3"],
     },
   ]
 
   return (
-    <div className="bg-[#111528] border-t border-gray-800 p-4 transition-all duration-300 ease-in-out">
-      <div className="max-w-6xl mx-auto">
+    <div className="bg-[#0a0b14] border-t border-gray-800">
+      <div className="max-w-7xl mx-auto p-4">
         {isExpanded && (
-          <div className="grid grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
             <CategoryButton
               icon={<FileText className="w-6 h-6" />}
               title="Review"
               description="Analyze and evaluate legal documents"
-              color="bg-purple-500"
+              color="bg-purple-600"
             />
             <CategoryButton
               icon={<PenTool className="w-6 h-6" />}
               title="Draft"
               description="Create and edit legal documents"
-              color="bg-green-500"
+              color="bg-green-600"
             />
             <CategoryButton
               icon={<MessageSquare className="w-6 h-6" />}
               title="Summarize"
               description="Condense complex legal information"
-              color="bg-yellow-500"
+              color="bg-yellow-600"
             />
             <CategoryButton
               icon={<Search className="w-6 h-6" />}
               title="Research"
               description="Explore legal precedents and statutes"
-              color="bg-blue-500"
+              color="bg-blue-600"
             />
           </div>
         )}
@@ -121,7 +104,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-gray-400 hover:text-white transition-colors h-8 w-8 p-0 flex-shrink-0"
+                  className="text-gray-400 hover:text-orange-500 transition-colors h-8 w-8 p-0 flex-shrink-0"
                 >
                   {isExpanded ? (
                     <ChevronDown className="h-4 w-4" />
@@ -130,7 +113,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
                   )}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent className="bg-gray-800 text-white">
                 <p>{isExpanded ? 'Hide Options' : 'Show Options'}</p>
               </TooltipContent>
             </Tooltip>
@@ -140,7 +123,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
               value={input}
               onChange={handleInputChange}
               placeholder="Message Prompt Composer +"
-              className="bg-[#1e2235] border-gray-700 text-white text-sm py-2 pr-10 resize-none focus:ring-2 focus:ring-orange-500 transition-all min-h-[50px]"
+              className="resize-none focus-visible:ring-1 focus-visible:ring-orange-500 min-h-[50px] bg-[#14151f] text-white border-gray-700"
               rows={isExpanded ? 3 : 1}
             />
             <div className="absolute right-2 top-2 flex space-x-1">
@@ -166,27 +149,27 @@ const BottomBar: React.FC<BottomBarProps> = ({
               <Popover key={providerOption.name}>
                 <PopoverTrigger asChild>
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="icon"
                     onClick={() => setProvider(providerOption.name)}
-                    className="p-0 h-10 w-10 flex items-center justify-center hover:bg-[#1e2235] transition-colors"
+                    className={cn(
+                      "p-0 h-10 w-10 flex items-center justify-center transition-colors bg-[#14151f] border-gray-700 text-white hover:bg-gray-700",
+                      provider === providerOption.name && "ring-2 ring-orange-500"
+                    )}
                   >
-                    <providerOption.icon className="w-6 h-6" />
+                    <ProviderIcon provider={providerOption.name} className="w-6 h-6" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-40 p-2 bg-[#1e2235] border-gray-700">
+                <PopoverContent className="w-40 p-0 bg-[#14151f] border-gray-700">
                   {providerOption.models.map((modelOption) => (
                     <Button
                       key={modelOption}
                       variant="ghost"
-                      className="w-full justify-start text-white hover:bg-[#282d45] text-sm"
                       onClick={() => {
                         setModel(modelOption)
-                        onAddMultiConversation(
-                          providerOption.name,
-                          modelOption
-                        )
+                        onAddMultiConversation(providerOption.name, modelOption)
                       }}
+                      className="w-full justify-start text-white hover:bg-gray-700 hover:text-orange-500"
                     >
                       {modelOption}
                     </Button>
@@ -194,20 +177,14 @@ const BottomBar: React.FC<BottomBarProps> = ({
                 </PopoverContent>
               </Popover>
             ))}
-            <motion.div
-              drag="y"
-              dragConstraints={{ top: 0, bottom: 0 }}
-              onDrag={handleDrag}
-              className="cursor-grab active:cursor-grabbing"
+            <Button
+              onClick={handleSend}
+              disabled={isInputEmpty}
+              className="bg-orange-500 hover:bg-orange-600 text-white"
             >
-              <Button
-                onClick={handleSend}
-                disabled={isInputEmpty}
-                className="w-10 h-10 bg-[#54a9eb] hover:bg-orange-500 text-white transition-colors p-2 rounded-full"
-              >
-                <Send className="w-5 h-5" />
-              </Button>
-            </motion.div>
+              <Send className="h-4 w-4 mr-2" />
+              Send
+            </Button>
           </div>
         </div>
       </div>

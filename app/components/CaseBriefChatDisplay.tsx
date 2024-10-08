@@ -15,7 +15,7 @@ interface CaseBriefChatDisplayProps {
   onClose: () => void;
 }
 
-function CaseBriefChatDisplay({ caseBrief, onClose }: CaseBriefChatDisplayProps) {
+const CaseBriefChatDisplay: React.FC<CaseBriefChatDisplayProps> = ({ caseBrief, onClose }) => {
   const [sortOption, setSortOption] = useState("Brief")
   const [isEli5, setIsEli5] = useState(false)
 
@@ -130,7 +130,7 @@ function CaseBriefChatDisplay({ caseBrief, onClose }: CaseBriefChatDisplayProps)
                         size="icon"
                         onClick={() =>
                           navigator.clipboard.writeText(
-                            Array.isArray(value) ? value.join('\n') : value
+                            Array.isArray(value) ? value.join('\n') : value as string
                           )
                         }
                         className="text-gray-400 hover:text-white transition-colors"
@@ -146,13 +146,11 @@ function CaseBriefChatDisplay({ caseBrief, onClose }: CaseBriefChatDisplayProps)
                 {Array.isArray(value) ? (
                   <ul className="list-disc list-inside space-y-1">
                     {value.map((item, i) => (
-                      <li key={i} className="text-sm text-gray-300">
-                        {item}
-                      </li>
+                      <li key={i} className="text-sm text-gray-300">{item}</li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-gray-300">{value}</p>
+                  <p className="text-sm text-gray-300 whitespace-pre-wrap">{value}</p>
                 )}
               </div>
             </motion.div>
